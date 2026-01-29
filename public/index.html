@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Paste</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>PasteBin</h1>
+</header>
+
+<main>
+  <div class="paste-container">
+    <textarea id="text" placeholder="Paste your text here..."></textarea>
+
+    <div class="row">
+      <input id="end_sec" type="number" placeholder="Expire in seconds (optional)">
+      <input id="views" type="number" placeholder="View limit (optional)">
+    </div>
+
+    <button onclick="createPaste()">Create Paste</button>
+
+    <p id="result" class="success"></p>
+    <p id="error" class="error"></p>
+  </div>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+/* ===== Body & Layout ===== */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #111; /* dark black background */
+  color: #eee;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Header ===== */
+header {
+  text-align: center;
+  padding: 30px 0;
+  background: #1a1a1a;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  color: #f6f6f6;
+  text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+}
+
+/* ===== Main container ===== */
+main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.paste-container {
+  background: #222; /* dark card */
+  padding: 30px 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* ===== Headings ===== */
+h2 {
+  margin-bottom: 15px;
+  color: #f0f0f0;
+  text-align: center;
+}
+
+/* ===== Textarea ===== */
+textarea {
+  width: 100%;
+  height: 200px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #555;
+  background: #111;
+  color: #eee;
+  font-size: 16px;
+  resize: none;
+  transition: 0.3s;
+}
+
+textarea:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 10px rgba(102,126,234,0.6);
+  outline: none;
+}
+
+/* ===== Input row ===== */
+.row {
+  margin: 15px 0;
+  display: flex;
+  gap: 10px;
+}
+
+input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #555;
+  background: #111;
+  color: #eee;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 6px rgba(102,126,234,0.4);
+  outline: none;
+}
+
+/* ===== Button ===== */
+button {
+  margin-top: 10px;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #667eea;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+}
+
+button:hover {
+  background: #5a67d8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102,126,234,0.5);
+}
+
+/* ===== Paste content box ===== */
+pre {
+  background: #111; /* dark inside card */
+  color: #eee;
+  padding: 15px;
+  border-radius: 10px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-x: auto;
+  font-size: 16px;
+  border: 1px solid #555;
+}
+
+/* ===== Meta info ===== */
+#meta {
+  margin-top: 10px;
+  color: #bbb;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ===== Success & Error messages ===== */
+.success {
+  margin-top: 15px;
+  color: #2f855a;
+  font-weight: bold;
+  text-align: center;
+}
+
+.error {
+  margin-top: 10px;
+  color: #e53e3e;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* ===== Responsive ===== */
+@media(max-width: 500px){
+  .paste-container {
+    padding: 20px;
+  }
+  pre, textarea {
+    font-size: 14px;
+  }
+  .row {
+    flex-direction: column;
+  }
+}
