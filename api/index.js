@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const app = express()
-const { nanoid } = require("nanoid");
+import { nanoid } from 'nanoid';
 app.use(express.static("public"));
 
 app.use(express.json())
