@@ -1,7 +1,6 @@
 require('dotenv').config()
 const express = require('express')
 const app = express()
-import { nanoid } from 'nanoid';
 app.use(express.static("public"));
 let nanoid
 async function loadNanoid() {
