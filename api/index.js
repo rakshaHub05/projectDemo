@@ -3,7 +3,13 @@ const express = require('express')
 const app = express()
 import { nanoid } from 'nanoid';
 app.use(express.static("public"));
-
+let nanoid
+async function loadNanoid() {
+  if (!nanoid) {
+    const mod = await import('nanoid')
+    nanoid = mod.nanoid
+  }
+}
 app.use(express.json())
 app.get("/p/:id", async (req, res) => {
   const id = req.params.id;
@@ -84,7 +90,7 @@ app.post("/api/pastes", async (req, res) => {
   if (views !== undefined && (!Number.isInteger(views) || views < 1)) {
     return res.status(400).json({ error: "Invalid views" });
   }
-
+  await loadNanoid()
   const id = nanoid(10);
   const expiresAt = end_sec ? `NOW() + INTERVAL '${end_sec} seconds'` : null;
 
