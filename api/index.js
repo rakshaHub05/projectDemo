@@ -6,33 +6,33 @@ app.use(express.static("public"));
 
 app.use(express.json())
 app.get("/p/:id", async (req, res) => {
-    const id = req.params.id;
+  const id = req.params.id;
 
-    // Fetch paste from DB
-    const paste = await getPasteFromDB(id); // implement this
-debugger;
-    if (!paste) {
-      console.log("paste"+paste)
-        return res.status(404).send("Paste not found or expired");
-    }
+  const paste = await getPasteDataFromDB(id);
 
-    // Send HTML with safe text rendering
-    res.send(`
+  if (!paste) {
+    return res.status(404).send("Paste not found or expired");
+  }
+  res.send(`
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="utf-8">
+            <link rel="stylesheet" href="/style.css">
             <title>Paste ${id}</title>
-            <style>
-                body { font-family: Arial; max-width: 700px; margin: 40px auto; }
-                pre { background: #f4f4f4; padding: 10px; white-space: pre-wrap; }
-            </style>
         </head>
         <body>
-            <h2>Paste</h2>
-            <pre>${paste.content.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</pre>
+        <header>
+          <h1>PasteBin</h1>
+        </header>
+        <main>
+        <div class="paste-container">
+            <h2>View Paste</h2>
+            <pre id="content">${paste.content.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</pre>
             <p>Remaining views: ${paste.remaining_views ?? "∞"}</p>
             <p>Expires at: ${paste.expires_at ?? "Never"}</p>
+            </div>
+             </main>
         </body>
         </html>
     `);
@@ -62,7 +62,6 @@ app.get('/test-db', async (req, res) => {
   }
 })
 
-/* ---------- HELP ---------- */
 app.get("/api/help", async (req, res) => {
   try {
     await pool.query("SELECT 1");
@@ -72,8 +71,8 @@ app.get("/api/help", async (req, res) => {
   }
 });
 
-/* ---------- CREATE PASTE ---------- */
 app.post("/api/pastes", async (req, res) => {
+  debugger;
   const { text, end_sec, views } = req.body;
 
   if (!text || typeof text !== "string" || !text.trim()) {
@@ -102,8 +101,8 @@ app.post("/api/pastes", async (req, res) => {
   });
 });
 
-/* ---------- FETCH JSON ---------- */
 app.get("/api/pastes/:id", async (req, res) => {
+  debugger;
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
@@ -144,7 +143,6 @@ app.get("/api/pastes/:id", async (req, res) => {
   }
 });
 
-/* ---------- HTML VIEW ---------- */
 app.get("/p/:id", async (req, res) => {
   const client = await pool.connect();
   try {
@@ -190,34 +188,31 @@ app.get("/p/:id", async (req, res) => {
     client.release();
   }
 });
-async function getPasteFromDB(id) {
-    const now = new Date();
+async function getPasteDataFromDB(id) {
+  const now = new Date();
 
-    const { rows } = await pool.query(
-        `SELECT * FROM pastes_data WHERE id = $1`,
-        [id]
+  const { rows } = await pool.query(
+    `SELECT * FROM pastes_data WHERE id = $1`,
+    [id]
+  );
+
+  if (!rows[0]) return null;
+
+  const paste = rows[0];
+
+  if (paste.expires_at && paste.expires_at < now) return null;
+
+  if (paste.views_left !== null && paste.views_left <= 0) return null;
+
+  if (paste.views_left !== null) {
+    await pool.query(
+      `UPDATE pastes_data SET remaining_views = remaining_views - 1 WHERE id = $1`,
+      [id]
     );
+    paste.views_left -= 1;
+  }
 
-    if (!rows[0]) return null;
-
-    const paste = rows[0];
-
-    // Expired?
-    if (paste.expires_at && paste.expires_at < now) return null;
-
-    // View limit?
-    if (paste.views_left !== null && paste.views_left <= 0) return null;
-
-    // Decrement views safely
-    if (paste.views_left !== null) {
-        await pool.query(
-            `UPDATE pastes_data SET remaining_views = remaining_views - 1 WHERE id = $1`,
-            [id]
-        );
-        paste.views_left -= 1;
-    }
-
-    return paste;
+  return paste;
 }
 /*app.listen(3000, () => { // remove later
   console.log("Server running on port 3001");
